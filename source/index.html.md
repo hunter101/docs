@@ -20,10 +20,12 @@ Welcome to the hardtofind.com.au API documentation!
 
 # Authentication
 
-The API uses [JSON Web Tokens](https://jwt.io/) for authentication where necessary. For the rest of this documentation we refer to these as JWT's. To obtain a JWT use the `/authorise` endpoint.
+The API uses [JSON Web Tokens](https://jwt.io/) for authentication where necessary. 
+For the rest of this documentation we refer to these as JWT's. 
+To obtain a JWT use the `/authenticate` endpoint.
 
 Tokens are issued for a lifetime of 15 minutes which should be enough to undertake any action via the API. 
-We may impliment long lived tokens based on feedback, but as this is carries an inherent security risk, we require
+We may implement long lived tokens based on feedback, but as this is carries an inherent security risk, we require
 re-authentication with each set of actions.
 
 API requests expect for the API token to be included in all API requests to the server in an `X-Auth-Token` header as follows:
