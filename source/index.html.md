@@ -1,14 +1,11 @@
 ---
-title: API Reference
+title: Hardtofind API Reference
 
 language_tabs:
-  - shell
-  - ruby
-  - python
-  - javascript
+  - json
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
+  - <a href='https://www.hardtofind.com.au' target='_blank'>www.hardtofind.com.au</a>
   - <a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a>
 
 includes:
@@ -19,171 +16,94 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
-
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Welcome to the hardtofind.com.au API documentation!
 
 # Authentication
 
-> To authorize, use this code:
+The API uses [JSON Web Tokens](https://jwt.io/) for authentication where necessary. For the rest of this documentation we refer to these as JWT's. To obtain a JWT use the `/authorise` endpoint.
 
-```ruby
-require 'kittn'
+Tokens are issued for a lifetime of 15 minutes which should be enough to undertake any action via the API. 
+We may impliment long lived tokens based on feedback, but as this is carries an inherent security risk, we require
+re-authentication with each set of actions.
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
+API requests expect for the API token to be included in all API requests to the server in an `X-Auth-Token` header as follows:
 
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
+`X-Auth-Token: <your_jwt>`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>your_jwt</code> with your personal API key.
 </aside>
 
-# Kittens
+# POST /authenticate
 
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
+To obtain a JWT you need to POST your username and password to this endpoint with the structure as outlined here.
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "username": "<your_username>", 
+  "password": "<your_password>"
+}
+```
+> If the supplied credentials are valid the above command returns a JSON response with the JWT as outlined below:
+
+```json
+{
+  "person": {
+    "id": "<your_id>",
+    "role": "<your_role>"
+  },
+  "token": "<your_jwt>"
 }
 ```
 
-This endpoint retrieves a specific kitten.
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+# GET /info
 
-### HTTP Request
+Once you have a JWT you can check its contents using the `/info` endpoint. It will return the details as outlined here:
 
-`GET http://example.com/kittens/<ID>`
+```json
+{
+    "user_id": 111,
+    "seller_account_id": 222,
+    "created": "<created_date>",
+    "expires": "<expiry_date>",
+    "roles": [
+        "<your_role>",
+        "<your_other_role>"
+    ]
+}
+```
 
-### URL Parameters
+# POST /batch
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+For easy management of frequently changing data and to facilitate keeping your in-house systems in sync with hardtofind.com.au
+a series of batch update jobs can be created. They are outlined below.
 
+## Variant inventory updates:
+
+```json
+{  
+   "action":"update",
+   "entity_type": "variant",
+   "entities":[  
+      {  
+         "sku":"<SKU-001>",
+         "inventory": 199
+      },
+      {  
+         "sku":"<SKU-002>",
+         "inventory": 99
+      },
+      {  
+         "sku":"<SKU-003>",
+         "inventory": 55
+      }
+   ]
+}
+```
+To update variant inventory, send a request to `POST /batch` with the JSON as outlined here within the body.
+
+If the supplied SKU's are not unique within your catalog, they will be ignored. We recommed ensuring your SKU's are 
+unique within the system in any case. This business rule is not yet enforced, but may be in future.
+
+If the supplied SKU's do not exist within your catalog, they will be ignored.
