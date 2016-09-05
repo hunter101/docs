@@ -20,6 +20,8 @@ Welcome to the hardtofind.com.au API documentation!
 
 The base URL for all API endpoints is: `https://api.hardtofind.com.au/`
 
+A staging environment is available at: `https://staging-api.hardtofind.com.au/`. Please be aware that the database is not kept up-to-date and may be purged at any time.
+
 # Authentication
 
 The API uses [JSON Web Tokens](https://jwt.io/) for authentication where necessary. 
