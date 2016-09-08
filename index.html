@@ -143,9 +143,12 @@ re-authentication with each set of actions.</p>
 You must replace <code>your_jwt</code> with your personal API key.
 </aside>
 
-<h1 id="post-authenticate">POST /authenticate</h1>
+<h2 id="post-authenticate">POST /authenticate</h2>
 
 <p>To obtain a JWT you need to POST your username and password to this endpoint with the structure as outlined here.</p>
+
+<p>The JWT is valid for a period of 15 minutes from the time of issue which should be sufficient to undertake any operations
+using the API while minimising security risks.</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;your_username&gt;"</span><span class="p">,</span><span class="w"> 
   </span><span class="nt">"password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;your_password&gt;"</span><span class="w">
@@ -164,7 +167,7 @@ You must replace <code>your_jwt</code> with your personal API key.
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h1 id="get-info">GET /info</h1>
+<h2 id="get-info">GET /info</h2>
 
 <p>Once you have a JWT you can check its contents using the <code class="prettyprint">/info</code> endpoint. It will return the details as outlined here:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
@@ -179,7 +182,26 @@ You must replace <code>your_jwt</code> with your personal API key.
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<h1 id="post-batch">POST /batch</h1>
+<h1 id="paged-data-pagination">Paged data (pagination)</h1>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="err">...</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nt">"page_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"page_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"total_results"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"pages"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>Throughout the API when a large amount of data can be retrieved a standard return format is used to facilitate paging through the results.</p>
+
+<p>The <code class="prettyprint">data</code> element will contain JSON representations of the appropriate entities for your request, the other elements 
+are fairly self explinatory and provide sufficient information to craft navigation links. </p>
+
+<p>To navigate through the pages, append a <code class="prettyprint">page_number</code> query string parameter to your next <code class="prettyprint">GET</code> request.</p>
+
+<h1 id="batch-operations">Batch operations</h1>
 
 <p>For easy management of frequently changing data and to facilitate keeping your in-house systems in sync with hardtofind.com.au
 a series of batch update jobs can be created. They are outlined below.</p>
@@ -211,6 +233,174 @@ a series of batch update jobs can be created. They are outlined below.</p>
 unique within the system in any case. This business rule is not yet enforced, but may be in future.</p>
 
 <p>If the supplied SKU&rsquo;s do not exist within your catalog, they will be ignored.</p>
+
+<h1 id="order-management">Order Management</h1>
+
+<aside class="warning">
+Although the API enables you to easily import Order data into your in-house system, it is still a requirement that
+you include an official hardtofind packing slip within each of your shipments.
+
+A direct download link is provided within the <code>_links.packing_slip</code> element to allow you to download the PDF packing slip directly.
+</aside>
+
+<h2 id="standard-order-structure">Standard Order structure</h2>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"READY"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"_links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.hardtofind.com.au/order/123456"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"manage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.hardtofind.com.au/mfadmin/sales_order_part/view/123456"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"packing_slip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.hardtofind.com.au/order/123456/packing-slip"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"dates"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-08-18T14:43:22+1000"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-08-18T14:43:22+1000"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"dispatch_due_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-08-23T12:18:00+1000"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"payment_summary"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"price"</span><span class="p">:</span><span class="w"> </span><span class="mf">99.95</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"shipping"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"value_addition"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"discount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"credit"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"payment"</span><span class="p">:</span><span class="w"> </span><span class="mf">99.95</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"total"</span><span class="p">:</span><span class="w"> </span><span class="mf">99.95</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"lines"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"product"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Product title here"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"price"</span><span class="p">:</span><span class="w"> </span><span class="mf">99.95</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"product_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"111"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"sku"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SKU-111"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"variant_data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                    </span><span class="p">{</span><span class="w">
+                        </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Clothing size"</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"XL"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">],</span><span class="w">
+                </span><span class="nt">"personalisations"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                    </span><span class="p">{</span><span class="w">
+                        </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"First personalisation"</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Something personal"</span><span class="w">
+                    </span><span class="p">},</span><span class="w">
+                    </span><span class="p">{</span><span class="w">
+                        </span><span class="nt">"label"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Second personalisation"</span><span class="p">,</span><span class="w">
+                        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Something even more personal"</span><span class="w">
+                    </span><span class="p">}</span><span class="w">
+                </span><span class="p">]</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"gift_wrapping"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Free gift wrap with personal message"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Have a lovely time!"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"price"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"shipping"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tim"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Massey"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"line_one"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12 Address Street"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"line_two"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"suburb"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Suburbia"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"state"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ACT"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"postcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1001"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Australia"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"company"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Company Name"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Shipping - FREE standard shipping"</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"price"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+                </span><span class="nt">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nt">"instructions"</span><span class="p">:</span><span class="w"> </span><span class="s2">"If no-one home - please leave on front step."</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"shipments"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"shipment_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-09-08T14:57:37+1000"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"tracking_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TRACK-1234"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"shipping_provider_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Provider Name Here"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The JSON structure to the right is a representation of an Order within the system and should provide you with all the data
+necessary to fulfill the order.</p>
+
+<h2 id="order-states">Order States</h2>
+
+<p>The available Order states within hardtofind.com.au are as follows:</p>
+
+<table><thead>
+<tr>
+<th>Order State</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>READY</td>
+<td>The Order has been paid for fully and is awaiting fulfillment by the Seller</td>
+</tr>
+<tr>
+<td>PROCESSED</td>
+<td>The Order has been picked up by the Seller and is undergoing fulfillment</td>
+</tr>
+<tr>
+<td>SHIPPED</td>
+<td>The Order items have been fully shipped by the Seller.</td>
+</tr>
+<tr>
+<td>RETURNED</td>
+<td>The Order has been returned in full</td>
+</tr>
+<tr>
+<td>REFUNDED</td>
+<td>The Order has had the monies refunded to the Shopper</td>
+</tr>
+<tr>
+<td>CANCELLED</td>
+<td>The Order has been cancelled by the Customer Support team and the finances manually corrected.</td>
+</tr>
+</tbody></table>
+
+<h2 id="get-orders">GET /orders</h2>
+
+<p>To view a list of Orders use this endpoint. It is possible to filter the list based on the following query string parameters.</p>
+
+<p>By default the status of <code class="prettyprint">PENDING</code> will be returned. Orders are ordered by last updated date (descending), most recently updated first.</p>
+
+<p>Orders will be returned using the standard paged data structure as outlined <a href="#paged-data-pagination">here</a>.</p>
+
+<table><thead>
+<tr>
+<th>Query parameter</th>
+<th>Available options</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>status</td>
+<td>One of the status listed <a href="#order-states">here</a></td>
+<td>When supplied, only orders matching the status will be returned.</td>
+</tr>
+<tr>
+<td>page_number</td>
+<td><code>[0-9]</code></td>
+<td>To be used for paging through large result sets</td>
+</tr>
+</tbody></table>
+
+<h2 id="get-order-id">GET /order/{id}</h2>
+
+<p>To retrieve a specific Order, issue a GET request to this endpoint. The return structure will match the standard Order as outlined <a href="#order-management">here</a> </p>
 
           <h1 id="errors">Errors</h1>
 
