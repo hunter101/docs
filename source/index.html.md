@@ -270,3 +270,44 @@ page_number | <code>[0-9]</code> | To be used for paging through large result se
 ## GET /order/{id}
 
 To retrieve a specific Order, issue a GET request to this endpoint. The return structure will match the standard Order as outlined [here](#order-management) 
+
+## POST /order/{id}/transition
+
+```json
+{
+    "action": "<action name>",
+    "data":{}
+}
+```
+
+To move an order through its lifecycle, create a transition using this endpoint.
+
+Available actions are:
+
+* Process
+* Ship
+
+### Process transition
+
+```json
+{
+    "action": "process"
+}
+```
+
+The process transition only requires an action property of process.
+
+### Ship transition
+
+```json
+{
+    "action": "ship",
+    "data":{
+        "tracking_number": "TRACK-123456",
+        "shipping_provider_name": "Royal Mail",
+        "shipment_date": "2016-09-15T14:41:25+1000"
+    }
+}
+```
+
+The structure of a shipment transition requires an action of ship and the data contains the shipment provider and tracking information.
