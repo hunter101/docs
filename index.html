@@ -402,6 +402,43 @@ necessary to fulfill the order.</p>
 
 <p>To retrieve a specific Order, issue a GET request to this endpoint. The return structure will match the standard Order as outlined <a href="#order-management">here</a> </p>
 
+<h2 id="post-order-id-transition">POST /order/{id}/transition</h2>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;action name&gt;"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:{}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>To move an order through its lifecycle, create a transition using this endpoint.</p>
+
+<p>Available actions are:</p>
+
+<ul>
+<li>Process</li>
+<li>Ship</li>
+</ul>
+
+<h3 id="process-transition">Process transition</h3>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"process"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The process transition only requires an action property of process.</p>
+
+<h3 id="ship-transition">Ship transition</h3>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+    </span><span class="nt">"action"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ship"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"data"</span><span class="p">:{</span><span class="w">
+        </span><span class="nt">"tracking_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TRACK-123456"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"shipping_provider_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Royal Mail"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"shipment_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-09-15T14:41:25+1000"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The structure of a shipment transition requires an action of ship and the data contains the shipment provider and tracking information.</p>
+
           <h1 id="errors">Errors</h1>
 
 <p>The API uses the following error codes:</p>
