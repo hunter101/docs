@@ -1,4 +1,4 @@
----
+cd---
 title: Hardtofind API Reference
 
 language_tabs:
@@ -46,6 +46,8 @@ To obtain a JWT you need to POST your username and password to this endpoint wit
 
 The JWT is valid for a period of 15 minutes from the time of issue which should be sufficient to undertake any operations
 using the API while minimising security risks.
+
+Note: the username and password belong to the store owner. There is currently a limitation of one user account per store.
 
 ```json
 {
@@ -172,40 +174,36 @@ A direct download link is provided within the <code>_links.packing_slip</code> e
         "payment": 99.95,
         "total": 99.95
     },
-    "lines": {
-        "product": [
-            {
-                "description": "Product title here",
-                "price": 99.95,
-                "product_id": "111",
-                "quantity": 1,
-                "sku": "SKU-111",
-                "variant_data": [
-                    {
-                        "label": "Clothing size",
-                        "value": "XL"
-                    }
-                ],
-                "personalisations": [
-                    {
-                        "label": "First personalisation",
-                        "value": "Something personal"
-                    },
-                    {
-                        "label": "Second personalisation",
-                        "value": "Something even more personal"
-                    }
-                ]
-            }
-        ],
-        "gift_wrapping": [
-            {
-                "description": "Free gift wrap with personal message",
-                "message": "Have a lovely time!",
-                "price": 0,
-                "quantity": 1
-            }
-        ]
+    "lines": [
+        {
+            "description": "Product title here",
+            "price": 99.95,
+            "product_id": "111",
+            "quantity": 1,
+            "sku": "SKU-111",
+            "variant_data": [
+                {
+                    "label": "Clothing size",
+                    "value": "XL"
+                }
+            ],
+            "personalisations": [
+                {
+                    "label": "First personalisation",
+                    "value": "Something personal"
+                },
+                {
+                    "label": "Second personalisation",
+                    "value": "Something even more personal"
+                }
+            ]
+        }
+    ],
+    "gift_wrapping": {
+        "description": "Free gift wrap with personal message",
+        "message": "Have a lovely time!",
+        "price": 0,
+        "quantity": 1
     },
     "shipping": {
         "address": {
@@ -219,13 +217,11 @@ A direct download link is provided within the <code>_links.packing_slip</code> e
             "country": "Australia",
             "company": "Company Name"
         },
-        "method": [
-            {
-                "description": "Shipping - FREE standard shipping",
-                "price": 0,
-                "quantity": 1
-            }
-        ],
+        "method": {
+            "description": "Shipping - FREE standard shipping",
+            "price": 0,
+            "quantity": 1
+        },
         "instructions": "If no-one home - please leave on front step."
     },
     "shipments": [
@@ -284,8 +280,8 @@ To move an order through its lifecycle, create a transition using this endpoint.
 
 Available actions are:
 
-* Process
-* Ship
+* process
+* ship
 
 ### Process transition
 
