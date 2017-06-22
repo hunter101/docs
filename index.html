@@ -441,6 +441,19 @@ necessary to fulfill the order.</p>
 
 <p>The structure of a shipment transition requires an action of ship and the data contains the shipment provider and tracking information.</p>
 
+<h3 id="get-shipping-providers">GET /shipping-providers</h3>
+
+<p>To retrieve a list of the current Shipping Providers, issue a GET request to this endpoint. A listing of the current providers will be returned as follows.</p>
+<pre class="highlight json"><code><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"provider_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Royal Mail"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"tracking_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://www.royalmail.com/track-your-item"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"accepts_tracking_id_in_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+
       </div>
       <div class="dark-box">
           <div class="lang-selector">
