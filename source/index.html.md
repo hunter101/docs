@@ -307,3 +307,18 @@ The process transition only requires an action property of process.
 ```
 
 The structure of a shipment transition requires an action of ship and the data contains the shipment provider and tracking information.
+
+### GET /shipping-providers
+
+To retrieve a list of the current Shipping Providers, issue a GET request to this endpoint. A listing of the current providers will be returned as follows.
+
+```json
+[
+    {
+        "id": "8",
+        "provider_name": "Royal Mail",
+        "tracking_url": "https://www.royalmail.com/track-your-item",
+        "accepts_tracking_id_in_url": false
+    }
+]
+```
