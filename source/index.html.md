@@ -326,3 +326,96 @@ To retrieve a list of the current Shipping Providers, issue a GET request to thi
     }
 ]
 ```
+
+# Giftcard Management
+
+<aside class="warning">
+Access to the giftcard api is strictly limited to specific vendor and not available to standard seller api usage.
+</aside>
+
+### POST /gift_card
+
+Create a new giftcard.. 
+
+Required params are 
+
+* value (Int: Initial amount deposited onto giftcard, between 10-1000)
+* transaction_id (String: Your internal reference)
+
+```json
+{
+  "value": <value_amount>, 
+  "transaction_id": "<transaction_id>"
+}
+```
+A successful request returns a 201 and the giftcard object.
+
+Example return structure:
+
+```json
+{
+  "status":"NOT REDEEMED YET",
+  "code":"HTF-2KQX-G530",
+  "expiry_date":"2019-01-24T00:34:20+0000",
+  "created_date":"2018-01-24T00:34:20+0000",
+  "transaction_id":"foobar"
+}
+```
+
+### POST /giftcard/balance
+
+Check the balance of a previously created giftcard.
+
+Required params are:
+
+* code (String: The redeemable giftcard code returned by the inital create method)
+
+```json
+{
+  code: "<code>"
+}
+```
+
+A successful request returns a 200 and the giftcard object.
+
+Example return structure
+
+```json
+{
+ "status":"NOT REDEEMED YET",
+ "code":"HTF-2KQX-G530",
+ "expiry_date":"2019-01-24T00:34:20+0000",
+ "created_date":"2018-01-24T00:34:20+0000",
+ "balance":100,
+ "transaction_id":"foobar"
+}
+```
+
+### POST /giftcad/void
+
+Void an existing giftcard rendering it unusable.
+
+Required params are:
+
+* code (String: The redeemable giftcard code returned by the inital create method)
+
+```json
+{
+  code: "<code>"
+}
+```
+
+A successful request returns a 200 and the giftcard object.
+
+Example return structure
+
+```json
+{
+ "status":"VOIDED",
+ "code":"HTF-2KQX-G530",
+ "expiry_date":"2019-01-24T00:34:20+0000",
+ "created_date":"2018-01-24T00:34:20+0000",
+ "balance":100,
+ "transaction_id":"foobar"
+}
+```
