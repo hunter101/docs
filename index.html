@@ -259,20 +259,6 @@
                   </li>
               </ul>
           </li>
-          <li>
-            <a href="#giftcard-management" class="toc-h1 toc-link" data-title="Giftcard Management">Giftcard Management</a>
-              <ul class="toc-list-h2">
-                  <li>
-                    <a href="#post-gift_card" class="toc-h2 toc-link" data-title="POST /gift_card">POST /gift_card</a>
-                  </li>
-                  <li>
-                    <a href="#post-giftcard-balance" class="toc-h2 toc-link" data-title="POST /giftcard/balance">POST /giftcard/balance</a>
-                  </li>
-                  <li>
-                    <a href="#post-giftcard-void" class="toc-h2 toc-link" data-title="POST /giftcard/void">POST /giftcard/void</a>
-                  </li>
-              </ul>
-          </li>
       </div>
     </div>
     <div class="page-wrapper">
@@ -581,80 +567,6 @@ necessary to fulfill the order.</p>
         </span><span class="s2">"accepts_tracking_id_in_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
     </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
-</span></code></pre><h1 id='giftcard-management'>Giftcard Management</h1>
-<aside class="warning">
-Access to the giftcard api is limited to giftcard vendors and not available in our standard seller api usage.
-</aside>
-<h2 id='post-gift_card'>POST /gift_card</h2>
-<p>Create a new giftcard.</p>
-
-<p>Required params are:</p>
-
-<ul>
-<li>value (Int: Initial amount deposited onto giftcard, between 10-1000)</li>
-<li>transaction_id (String: Your internal reference)</li>
-</ul>
-<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;value_amount&gt;</span><span class="p">,</span><span class="w"> 
-  </span><span class="s2">"transaction_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;transaction_id&gt;"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-<p>A successful request returns a 201 and the giftcard object.</p>
-
-<p>Example return structure:</p>
-<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"status"</span><span class="p">:</span><span class="s2">"NOT REDEEMED YET"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"code"</span><span class="p">:</span><span class="s2">"HTF-2KQX-G530"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"expiry_date"</span><span class="p">:</span><span class="s2">"2019-01-24T00:34:20+0000"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"created_date"</span><span class="p">:</span><span class="s2">"2018-01-24T00:34:20+0000"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"transaction_id"</span><span class="p">:</span><span class="s2">"foobar"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre><h2 id='post-giftcard-balance'>POST /giftcard/balance</h2>
-<p>Check the balance of a previously created giftcard.</p>
-
-<p>Required params are:</p>
-
-<ul>
-<li>code (String: The redeemable giftcard code returned by the inital create method)</li>
-</ul>
-<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="err">code</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;code&gt;"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-<p>A successful request returns a 200 and the giftcard object.</p>
-
-<p>Example return structure:</p>
-<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
- </span><span class="s2">"status"</span><span class="p">:</span><span class="s2">"NOT REDEEMED YET"</span><span class="p">,</span><span class="w">
- </span><span class="s2">"code"</span><span class="p">:</span><span class="s2">"HTF-2KQX-G530"</span><span class="p">,</span><span class="w">
- </span><span class="s2">"expiry_date"</span><span class="p">:</span><span class="s2">"2019-01-24T00:34:20+0000"</span><span class="p">,</span><span class="w">
- </span><span class="s2">"created_date"</span><span class="p">:</span><span class="s2">"2018-01-24T00:34:20+0000"</span><span class="p">,</span><span class="w">
- </span><span class="s2">"balance"</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="w">
- </span><span class="s2">"transaction_id"</span><span class="p">:</span><span class="s2">"foobar"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre><h2 id='post-giftcard-void'>POST /giftcard/void</h2>
-<p>Void an existing giftcard rendering it unusable.</p>
-
-<p>Required params are:</p>
-
-<ul>
-<li>code (String: The redeemable giftcard code returned by the inital create method)</li>
-</ul>
-<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="err">code</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;code&gt;"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-<p>A successful request returns a 200 and the giftcard object.</p>
-
-<p>Example return structure:</p>
-<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
- </span><span class="s2">"status"</span><span class="p">:</span><span class="s2">"VOIDED"</span><span class="p">,</span><span class="w">
- </span><span class="s2">"code"</span><span class="p">:</span><span class="s2">"HTF-2KQX-G530"</span><span class="p">,</span><span class="w">
- </span><span class="s2">"expiry_date"</span><span class="p">:</span><span class="s2">"2019-01-24T00:34:20+0000"</span><span class="p">,</span><span class="w">
- </span><span class="s2">"created_date"</span><span class="p">:</span><span class="s2">"2018-01-24T00:34:20+0000"</span><span class="p">,</span><span class="w">
- </span><span class="s2">"balance"</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="w">
- </span><span class="s2">"transaction_id"</span><span class="p">:</span><span class="s2">"foobar"</span><span class="w">
-</span><span class="p">}</span><span class="w">
 </span></code></pre>
       </div>
       <div class="dark-box">
