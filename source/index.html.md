@@ -330,14 +330,14 @@ To retrieve a list of the current Shipping Providers, issue a GET request to thi
 # Giftcard Management
 
 <aside class="warning">
-Access to the giftcard api is strictly limited to specific vendor and not available to standard seller api usage.
+Access to the giftcard api is limited to giftcard vendors and not available in our standard seller api usage.
 </aside>
 
-### POST /gift_card
+## POST /gift_card
 
-Create a new giftcard.. 
+Create a new giftcard.
 
-Required params are 
+Required params are:
 
 * value (Int: Initial amount deposited onto giftcard, between 10-1000)
 * transaction_id (String: Your internal reference)
@@ -362,7 +362,7 @@ Example return structure:
 }
 ```
 
-### POST /giftcard/balance
+## POST /giftcard/balance
 
 Check the balance of a previously created giftcard.
 
@@ -378,7 +378,7 @@ Required params are:
 
 A successful request returns a 200 and the giftcard object.
 
-Example return structure
+Example return structure:
 
 ```json
 {
@@ -391,7 +391,7 @@ Example return structure
 }
 ```
 
-### POST /giftcad/void
+## POST /giftcard/void
 
 Void an existing giftcard rendering it unusable.
 
@@ -407,7 +407,7 @@ Required params are:
 
 A successful request returns a 200 and the giftcard object.
 
-Example return structure
+Example return structure:
 
 ```json
 {
